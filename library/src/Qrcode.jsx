@@ -2,7 +2,7 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const QrCode = () => {
-  const value = "https://ur.library.org";
+  const value = "https://ur.library.org"; // This can be any URL or text you'd like to encode as a QR code.
 
   return (
     <div className="qr-code-container">
