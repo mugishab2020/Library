@@ -86,3 +86,20 @@ margin-right: auto;
   margin-left: auto;
   margin-right: auto;
 }
+/* Footer styles */
+.footer {
+  background-color: #f1f1f1;
+  padding: 1rem;
+  text-align: center;
+  position: bottom;
+  font-size: larger;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.footer p {
+  margin: 0;
+  color: #333;
+  font-size: 0.875rem;
+}
