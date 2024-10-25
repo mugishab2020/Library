@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { apiRequest } from './clientAPI';
 import './Login.css';
 import './App.css';
 
-// fetching data from backend to register the user
 const checkRegNumber = async (regNumber) => {
-  const { data } = await axios.get(`https://our api/${regNumber}`);
-  return data;
+  return apiRequest({
+    method: 'GET',
+    route: `/api/user/${regNumber}`,
+  });
 };
 
-// Registering the user if reg number entered is not valid or registered already
 const registerUser = async (userDetails) => {
-  const { data } = await axios.post('https://our api', userDetails);
-  return data; 
+  return apiRequest({
+    method: 'POST',
+    route: '/api/user/',
+    data: userDetails,
+  });
 };
+
+
 const Login = () => {
   const navigate = useNavigate();
   const [regNumber, setRegNumber] = useState('');
@@ -25,13 +30,13 @@ const Login = () => {
   const [level, setLevel] = useState('');
   const [regNumberFound, setRegNumberFound] = useState(true);
 
- const { data, refetch, isFetching, error } = useQuery({
-  queryKey: ['checkRegNumber', regNumber],
-  queryFn: () => checkRegNumber(regNumber),
-  enabled: false, 
-});
+  const { data, refetch, isFetching, error } = useQuery({
+    queryKey: ['checkRegNumber', regNumber],
+    queryFn: () => checkRegNumber(regNumber),
+    enabled: false, 
+  });
 
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     await refetch();
@@ -39,11 +44,13 @@ const Login = () => {
     if (data?.exists) {
       setRegNumberFound(true);
       navigate('/success');
-    }else {
-      //spliting name into first and last name from one input field
-     const [firstName, lastName = ''] = name.split(' ').slice(0, 2);
+    } else {
+      setRegNumberFound(false);
+      
+      // Splitting the name into first and last name from one input field
+      const [firstName, lastName = ''] = name.split(' ').slice(0, 2);
 
-      // Creating teh new user object to be register in the database
+      // Creating the new user object to be registered in the database
       const newUserDetails = {
         regNumber,
         firstName,
@@ -54,8 +61,8 @@ const Login = () => {
       };
 
       try {
-        const registerResponse = await registerUser(newUserDetails);
-        console.log('Registration successful:', registerResponse);
+        await registerUser(newUserDetails);
+        console.log('Registration successful');
         navigate('/success');
       } catch (error) {
         console.error('Error during registration:', error);
@@ -128,6 +135,17 @@ const Login = () => {
                 </div>
 
                 <div className="input-group">
+                  <label htmlFor="school">School</label>
+                  <input
+                    type="text"
+                    id="school"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="input-group">
                   <label htmlFor="department">Department</label>
                   <input
                     type="text"
@@ -165,6 +183,11 @@ const Login = () => {
       </div>
 
       <footer className="footer">
+        <p>
+          <span className="admin-login" onClick={() => navigate('/admin-login')}>
+            Go to admin panel
+          </span>
+        </p>
         <p>&copy; {new Date().getFullYear()} UR Library. All rights reserved.</p>
       </footer>
     </>

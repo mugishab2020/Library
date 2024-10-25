@@ -115,6 +115,11 @@ button:hover {
     animation: typing 3s steps(30, end), blink-caret 0.5s step-end infinite alternate;
     text-align: center;
 }
+.footer span {
+    color: #00628B;
+    font-size: large;
+    margin-bottom: 10px;
+}
 
 @media (max-width: 768px) {
     .container {

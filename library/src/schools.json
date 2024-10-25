@@ -1,0 +1,21 @@
+{
+  "schools": [
+    {
+      "name": "School of Science",
+      "departments": ["Physics", "Chemistry", "Mathematics"]
+    },
+    {
+      "name": "School of Engineering",
+      "departments": ["Civil Engineering", "Electrical Engineering", "Mechanical Engineering"]
+    },
+    {
+      "name": "School of Building , Architecture and Business Environment ",
+      "departments": ["Accounting", "Finance", "Marketing"]
+    },
+    {
+        "name": "School of ICT",
+      "departments": ["Computer science", "Computer Engeeniring", "Information Technology", "Information System"]
+    }
+    
+  ]
+}
