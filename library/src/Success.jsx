@@ -1,5 +1,6 @@
 import { QRCodeCanvas } from 'qrcode.react'
 import React from 'react'
+import QrCode from './Qrcode'
 
 
 const Success = () => {
@@ -26,7 +27,7 @@ const Success = () => {
       <h3>Your reference Id:</h3> 
       <h3>QR code: </h3>
       <div className="qrcode">
-      <QRCodeCanvas />
+      <QrCode />
       </div>
       </div>
     </div>

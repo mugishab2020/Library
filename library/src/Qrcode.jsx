@@ -1,8 +1,12 @@
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useSearchParams } from 'react-router-dom';
 
-const QrCode = () => {
-  const value = "https://ur.library.org"; // This can be any URL or text you'd like to encode as a QR code.
+const QrCode = ({params}) => {
+  const [searchParams] = useSearchParams();
+  const reg = searchParams.get('regNumber');
+  console.log(reg);
+  const value = `/qr-result/:${reg}`; // This can be any URL or text you'd like to encode as a QR code.
 
   return (
     <div className="qr-code-container">

@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import './Login.css';
-import './App.css';
+
 
 // fetching data from backend to register the user
 const checkRegNumber = async (regNumber) => {
-  const { data } = await axios.get(`https://our api/${regNumber}`);
-  return data;
+  const { data } = await axios.get(`https://6718f0327fc4c5ff8f4bc42a.mockapi.io/registrationNumbers?regNumber=${regNumber}`);
+  console.log(data);
+  return data; 
 };
 
 // Registering the user if reg number entered is not valid or registered already
@@ -16,6 +17,7 @@ const registerUser = async (userDetails) => {
   const { data } = await axios.post('https://our api', userDetails);
   return data; 
 };
+
 const Login = () => {
   const navigate = useNavigate();
   const [regNumber, setRegNumber] = useState('');
@@ -24,6 +26,7 @@ const Login = () => {
   const [department, setDepartment] = useState('');
   const [level, setLevel] = useState('');
   const [regNumberFound, setRegNumberFound] = useState(true);
+  
 
  const { data, refetch, isFetching, error } = useQuery({
   queryKey: ['checkRegNumber', regNumber],
@@ -31,18 +34,18 @@ const Login = () => {
   enabled: false, 
 });
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     await refetch();
-
-    if (data?.exists) {
-      setRegNumberFound(true);
-      navigate('/success');
+    
+    if (data) {
+      navigate(`/success?regNumber=${regNumber}`); // storing the reg in the url to use on success page.
     }else {
+      setRegNumberFound(false);
       //spliting name into first and last name from one input field
      const [firstName, lastName = ''] = name.split(' ').slice(0, 2);
-
+    
       // Creating teh new user object to be register in the database
       const newUserDetails = {
         regNumber,
