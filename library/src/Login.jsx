@@ -3,18 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import './Login.css';
+import { isError } from 'react-query';
+import { click } from '@testing-library/user-event/dist/click';
 
+const apiKey = process.env.REACT_APP_MOCK_API_KEY;
+const apiKeyN = process.env.REACT_APP_MOCK_API_KEY_2;
 
 // fetching data from backend to register the user
 const checkRegNumber = async (regNumber) => {
-  const { data } = await axios.get(`https://6718f0327fc4c5ff8f4bc42a.mockapi.io/registrationNumbers?regNumber=${regNumber}`);
+  const { data } = await axios.get(`https://${apiKeyN}.mockapi.io/registrationNumbers?regNumber=${regNumber}`);
   console.log(data);
   return data; 
 };
 
 // Registering the user if reg number entered is not valid or registered already
 const registerUser = async (userDetails) => {
-  const { data } = await axios.post('https://our api', userDetails);
+  const { data } = await axios.post('https://api.mockapi.com/users', userDetails, {
+    headers: {'x-api-key': apiKey}
+  });
   return data; 
 };
 
@@ -26,27 +32,30 @@ const Login = () => {
   const [department, setDepartment] = useState('');
   const [level, setLevel] = useState('');
   const [regNumberFound, setRegNumberFound] = useState(true);
+  const [clicked, setClicked] = useState(false);
   
-
- const { data, refetch, isFetching, error } = useQuery({
-  queryKey: ['checkRegNumber', regNumber],
-  queryFn: () => checkRegNumber(regNumber),
-  enabled: false, 
-});
+  
+  const { data, refetch, isFetching, error } = useQuery({
+   queryKey: ['checkRegNumber', regNumber],
+   queryFn: () => checkRegNumber(regNumber),
+   enabled: clicked, // disabling automatic fetch on mount  
+ });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    setClicked(true); // enabling the query
+    const {data: fetchedData} = await refetch(); 
     
-    await refetch();
-    
-    if (data) {
-      navigate(`/success?regNumber=${regNumber}`); // storing the reg in the url to use on success page.
-    }else {
+    if(fetchedData?.length > 0){
+      setRegNumberFound(true);
+      navigate(`/success?regNumber=${regNumber}`);
+    }
+    else {
       setRegNumberFound(false);
       //spliting name into first and last name from one input field
      const [firstName, lastName = ''] = name.split(' ').slice(0, 2);
     
-      // Creating teh new user object to be register in the database
+      // Creating the new user object to be register in the database
       const newUserDetails = {
         regNumber,
         firstName,
@@ -64,11 +73,12 @@ const Login = () => {
         console.error('Error during registration:', error);
       }
     }
+    setClicked(false); // Resetting clicked to prevent unnecessary fetches
   };
 
   return (
     <>
-      <div style={{ marginBottom: 30 }}>
+      {/*<div style={{ marginBottom: 30 }}>
         <div className="success__top">
           <h1 className="success__title">Login to our Entrance</h1>
           <div className="success__style-square success__style-square-big" />
@@ -83,7 +93,7 @@ const Login = () => {
           </div>
         </div>
         <div className="success__style-square success__style-square-three" />
-      </div>
+      </div>*/}
 
       <div className="container">
         <div className="upper"></div>
@@ -154,11 +164,11 @@ const Login = () => {
               </>
             )}
 
-            <button type="submit" disabled={isFetching}>
+            <button type="submit"  disabled={isFetching} >
               {isFetching ? 'Checking...' : regNumberFound ? 'Login' : 'Register'}
             </button>
 
-            {error && <p className="error-message">Error fetching data: {error.message}</p>}
+             {error && <p className="error-message">Error fetching data: {error.message} </p>} 
           </form>
         </div>
 
