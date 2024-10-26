@@ -43,11 +43,10 @@ const Login = () => {
     e.preventDefault(); 
     setClicked(true); // enabling the query
     const {data: fetchedData} = await refetch(); 
-    console.log(fetchedData)
-    console.log(fetchedData.id)
+    
     if(fetchedData?.length > 0){
       setRegNumberFound(true);
-      navigate(`/success?refId=${fetchedData[0].refId}`);
+      navigate(`/success?refId=${fetchedData[0]?.refId}`);
     }
     else {
       setRegNumberFound(false);
@@ -70,7 +69,7 @@ const Login = () => {
       try {
         const registerResponse = await registerUser(newUserDetails);
         console.log('Registration successful:', registerResponse);
-        navigate(`/success?refId=${data.refId}`);
+        navigate(`/success?refId=${registerResponse?.refId}`);
       } catch (error) {
         console.error('Error during registration:', error);
       }

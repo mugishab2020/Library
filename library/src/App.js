@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />, // Handle errors for this route
   },
   {
-    path: "/qr-result/:regNumber",
+    path: "/qr-result/:refId",
     element: <QrResult />,
     errorElement: <ErrorPage />, // Handle errors for this route
   },

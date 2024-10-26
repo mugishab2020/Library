@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useQuery } from "react-query";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
+import EntryDetails from "./EntryDetails";
 
 function QrResult() {
-  const [searchParams] = useSearchParams();
-  const refId = searchParams.get("refId");
+  const { refId } = useParams();
+
   console.log(refId);
   const apiKey = process.env.REACT_APP_MOCK_API_KEY;
 
@@ -19,12 +20,20 @@ function QrResult() {
   const { data, refetch, isFetching, error } = useQuery({
     queryKey: ["fetchStudent", refId],
     queryFn: () => fetchStudent(refId),
+    enabled: true,
   });
-
+  console.log(data);
   return (
     <div>
       <h1 className="qr-result__header">Entry Info</h1>
-      {data}
+
+      {isFetching ? (
+        <p className="qr-result__loader">Loading...</p>
+      ) : error ? (
+        <p>Error fetching data: {error.message}</p>
+      ) : (
+        data?.map((student) => <EntryDetails student={student} />)
+      )}
     </div>
   );
 }
