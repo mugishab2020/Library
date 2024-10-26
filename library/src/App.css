@@ -129,12 +129,20 @@ margin-right: auto;
     margin-right: auto;
   
 }
-.error404__t2, .error500__t2 {
+.error404__t2 {
     font-weight: bold;
     font-size: 50px;
     color: darkslategrey;
     margin-left: auto;
     margin-right: auto;
+}
+.error500__t2 {
+  font-weight: bold;
+  font-size: 30px;
+  color: darkslategrey;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 .redirect-link {
   width: fit-content;

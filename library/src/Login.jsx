@@ -5,21 +5,19 @@ import axios from 'axios';
 import './Login.css';
 import { isError } from 'react-query';
 import { click } from '@testing-library/user-event/dist/click';
+import ErrorPage from './ErrorPage'
 
 const apiKey = process.env.REACT_APP_MOCK_API_KEY;
-const apiKeyN = process.env.REACT_APP_MOCK_API_KEY_2;
 
 // fetching data from backend to register the user
 const checkRegNumber = async (regNumber) => {
-  const { data } = await axios.get(`https://${apiKeyN}.mockapi.io/registrationNumbers?regNumber=${regNumber}`);
-  console.log(data);
+  const { data } = await axios.get(`https://${apiKey}.mockapi.io/users?regNumber=${regNumber}`);
   return data; 
 };
 
 // Registering the user if reg number entered is not valid or registered already
 const registerUser = async (userDetails) => {
-  const { data } = await axios.post('https://api.mockapi.com/users', userDetails, {
-    headers: {'x-api-key': apiKey}
+  const { data } = await axios.post(`https://${apiKey}.mockapi.io/users`, userDetails, {
   });
   return data; 
 };
@@ -45,10 +43,11 @@ const Login = () => {
     e.preventDefault(); 
     setClicked(true); // enabling the query
     const {data: fetchedData} = await refetch(); 
-    
+    console.log(fetchedData)
+    console.log(fetchedData.id)
     if(fetchedData?.length > 0){
       setRegNumberFound(true);
-      navigate(`/success?regNumber=${regNumber}`);
+      navigate(`/success?refId=${fetchedData[0].refId}`);
     }
     else {
       setRegNumberFound(false);
@@ -65,17 +64,25 @@ const Login = () => {
         level,
       };
 
+      
+
+     if(level){
       try {
         const registerResponse = await registerUser(newUserDetails);
         console.log('Registration successful:', registerResponse);
-        navigate('/success');
+        navigate(`/success?refId=${data.refId}`);
       } catch (error) {
         console.error('Error during registration:', error);
       }
+     }
     }
     setClicked(false); // Resetting clicked to prevent unnecessary fetches
   };
 
+   // Render the error page if there's a 500 error
+   if (error?.response?.status === 500) {
+    return <ErrorPage err={error} />;
+  }
   return (
     <>
       {/*<div style={{ marginBottom: 30 }}>
@@ -165,10 +172,10 @@ const Login = () => {
             )}
 
             <button type="submit"  disabled={isFetching} >
-              {isFetching ? 'Checking...' : regNumberFound ? 'Login' : 'Register'}
+              {isFetching ? (regNumberFound ? 'Checking...': 'Registering...') : (regNumberFound ? 'Login' : 'Register')}
             </button>
 
-             {error && <p className="error-message">Error fetching data: {error.message} </p>} 
+             {/* {error && <p className="error-message">Error fetching data: {error.message} </p>} */} 
           </form>
         </div>
 
