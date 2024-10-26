@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "react-query";
 import "./App.css";
 import ErrorPage from "./ErrorPage";
 import Login from "./Login";
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
     element: <ErrorPage />, // Fallback for 404 errors
   },
 ]);
-
+const queryClient = new QueryClient();
 function App() {
   return (
     /*  <Router>
@@ -42,7 +43,9 @@ function App() {
         <Route path="*" element={<ErrorPage />} /> 
       </Routes>
     </Router> */
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 export default App;

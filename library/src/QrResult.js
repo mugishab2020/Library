@@ -1,26 +1,32 @@
 import axios from "axios";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 function QrResult() {
-  const { regNumber } = useParams(); // Get the regNumber from the URL
+  const [searchParams] = useSearchParams();
+  const refId = searchParams.get("refId");
+  console.log(refId);
+  const apiKey = process.env.REACT_APP_MOCK_API_KEY;
 
-  // fetching data from backend to register the user
-  const fetchStudent = async (regNumber) => {
+  // fetching student data from the backend
+  const fetchStudent = async (refId) => {
     const { data } = await axios.get(
-      `https://api.mockapi.com/qr?api_key=d7e59bc817154f0983784767f9fcfb52&regNumber`
+      `https://${apiKey}.mockapi.io/users?refId=${refId}`
     );
-    console.log(data);
     return data;
   };
 
   const { data, refetch, isFetching, error } = useQuery({
-    queryKey: ["fetchStudent", regNumber],
-    queryFn: () => fetchStudent(regNumber),
-    enabled: !!regNumber, // fetch only when the regNumber is defined.
+    queryKey: ["fetchStudent", refId],
+    queryFn: () => fetchStudent(refId),
   });
 
-  return <div>hello</div>;
+  return (
+    <div>
+      <h1 className="qr-result__header">Entry Info</h1>
+      {data}
+    </div>
+  );
 }
 
 export default QrResult;
