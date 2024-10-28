@@ -1,7 +1,6 @@
-import { QRCodeCanvas } from 'qrcode.react'
-import React from 'react'
-import QrCode from './Qrcode'
+import React from 'react';
 import { useSearchParams } from 'react-router-dom';
+import QrCode from './Qrcode';
 
 
 const Success = () => {

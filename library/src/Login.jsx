@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ErrorPage from './ErrorPage';
 import './Login.css';
-import { isError } from 'react-query';
-import { click } from '@testing-library/user-event/dist/click';
-import ErrorPage from './ErrorPage'
 
-const apiKey = process.env.REACT_APP_MOCK_API_KEY;
+const url = process.env.REACT_APP_BASE_URL;
 
 // fetching data from backend to register the user
 const checkRegNumber = async (regNumber) => {
-  const { data } = await axios.get(`https://${apiKey}.mockapi.io/users?regNumber=${regNumber}`);
+  const { data } = await axios.post(`${url}/user/${regNumber}`);
   return data; 
 };
 
 // Registering the user if reg number entered is not valid or registered already
 const registerUser = async (userDetails) => {
-  const { data } = await axios.post(`https://${apiKey}.mockapi.io/users`, userDetails, {
+  const { data } = await axios.post(`${url}/user`, userDetails, {
   });
   return data; 
 };
@@ -33,7 +31,7 @@ const Login = () => {
   const [clicked, setClicked] = useState(false);
   
   
-  const { data, refetch, isFetching, error } = useQuery({
+  const { refetch, isFetching, error } = useQuery({
    queryKey: ['checkRegNumber', regNumber],
    queryFn: () => checkRegNumber(regNumber),
    enabled: clicked, // disabling automatic fetch on mount  
@@ -55,9 +53,9 @@ const Login = () => {
     
       // Creating the new user object to be register in the database
       const newUserDetails = {
-        regNumber,
+        regNo: regNumber,
         firstName,
-        lastName,
+        otherName: lastName,
         gender,
         department,
         level,
@@ -69,7 +67,7 @@ const Login = () => {
       try {
         const registerResponse = await registerUser(newUserDetails);
         console.log('Registration successful:', registerResponse);
-        navigate(`/success?refId=${registerResponse?.refId}`);
+        navigate(`/success?refId=${registerResponse?.ticketId}`);
       } catch (error) {
         console.error('Error during registration:', error);
       }

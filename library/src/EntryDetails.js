@@ -1,12 +1,12 @@
 function EntryDetails({ student }) {
   return (
-    <div className="entry-details" key={student.id}>
+    <div className="entry-details" key={student._id}>
       <p>
-        <span className="entry-details__title">Ref Id:</span> {student.refId}
+        <span className="entry-details__title">Ref Id:</span> {student._id}
       </p>
       <p>
         <span className="entry-details__title">Reg No:</span>{" "}
-        {student.regNumber}
+        {student.regNo}
       </p>
       <p>
         <span className="entry-details__title">First Name:</span>{" "}
@@ -14,7 +14,7 @@ function EntryDetails({ student }) {
       </p>
       <p>
         <span className="entry-details__title">Last Name:</span>{" "}
-        {student.lastName}
+        {student.otherName}
       </p>
       <p>
         <span className="entry-details__title">Gender:</span> {student.gender}

@@ -1,16 +1,13 @@
 import { QueryClient, QueryClientProvider } from "react-query";
+import {
+  createBrowserRouter,
+  RouterProvider
+} from "react-router-dom";
 import "./App.css";
 import ErrorPage from "./ErrorPage";
 import Login from "./Login";
 import QrResult from "./QrResult";
 import Success from "./Success";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
 
 const router = createBrowserRouter([
   {
